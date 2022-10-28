@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import styles from '../styles/FeedItem.module.scss'
 import PropTypes from 'prop-types'
 import abcjsObj from 'abcjs'
 
@@ -52,7 +53,7 @@ class FeedItem extends PureComponent<IFeedItemProps> {
   render() {
     return (
       <div>
-        <div id={'abcjs-result-' + this.uniqueNumber} className="feedItem" />
+        <div id={'abcjs-result-' + this.uniqueNumber} className={styles.feeditem} />
       </div>
     )
   }

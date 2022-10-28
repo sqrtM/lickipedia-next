@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/App.module.scss';
+import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
 
 export interface IFeedProps {
@@ -52,14 +52,15 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
   public render() {
     return (
-      <div className="feed">
-        <div id='input-field'>
+      <div className={styles.feed}>
+        <div id={styles.inputfield}>
           <form onSubmit={this.handleSubmit}>
             <label>
               New Lick :
               <input type='text' name='title' placeholder='title' onChange={this.handleChange}/>
               <input type='text' name='key' placeholder='key' onChange={this.handleChange}/>
               <input type='text' name='music' placeholder='music' onChange={this.handleChange}/>
+              <input type='button' name='more' value='more' />
             </label>
             <input type="submit" value='submit' />
           </form> 
@@ -68,7 +69,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           { this.state.history.reverse().map(i => 
           <FeedItem
             abcNotation={i}
-            parserParams={{}}
+            parserParams={{ staffwidth: 720, wrap: { preferredMeasuresPerLine: 4 } }}
             engraverParams={{ responsive: 'resize' }}
             renderParams={{ viewportHorizontal: true }}
           />) }
