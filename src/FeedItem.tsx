@@ -2,52 +2,40 @@ import React, { PureComponent } from 'react'
 import styles from '../styles/FeedItem.module.scss'
 import PropTypes from 'prop-types'
 import abcjsObj from 'abcjs'
-
-declare module "abcjs"; 
+import AbcVisualParams from 'abcjs'
 
 interface IFeedItemProps {
   abcNotation: string,
-  parserParams: any, 
-  engraverParams: any, 
-  renderParams: any
+  parserParams: AbcVisualParams.AbcVisualParams, 
 }
 
 class FeedItem extends PureComponent<IFeedItemProps> {
   uniqueNumber = Date.now() + Math.random();
   static propTypes: { 
     abcNotation: PropTypes.Requireable<string>; 
-    parserParams: PropTypes.Requireable<object>; 
-    engraverParams: PropTypes.Requireable<object>;
-    renderParams: PropTypes.Requireable<object>;
+    parserParams: PropTypes.Requireable<AbcVisualParams.AbcVisualParams>; 
   }
   static defaultProps: { 
     abcNotation: string; 
-    parserParams: {}; 
-    engraverParams: { 
-      responsive: string 
-    }; 
-    renderParams: { 
-      viewportHorizontal: boolean 
-    } }
+    parserParams: AbcVisualParams.AbcVisualParams; 
+  }
 
-  renderAbcNotation({ abcNotation, parserParams, engraverParams, renderParams }: IFeedItemProps): void {
+  renderAbcNotation({ abcNotation, parserParams }: IFeedItemProps): void {
     abcjsObj.renderAbc(
       'abcjs-result-' + this.uniqueNumber,
       abcNotation,
-      parserParams,
-      //engraverParams,
-      //renderParams
+      parserParams
     )
   }
 
   componentDidMount() {
-    const { abcNotation, parserParams, engraverParams, renderParams } = this.props
-    this.renderAbcNotation({ abcNotation, parserParams, engraverParams, renderParams })
+    const { abcNotation, parserParams } = this.props
+    this.renderAbcNotation({ abcNotation, parserParams })
   }
 
   componentDidUpdate() {
-    const { abcNotation, parserParams, engraverParams, renderParams } = this.props
-    this.renderAbcNotation({ abcNotation, parserParams, engraverParams, renderParams })
+    const { abcNotation, parserParams } = this.props
+    this.renderAbcNotation({ abcNotation, parserParams })
   }
 
   render() {
@@ -57,20 +45,6 @@ class FeedItem extends PureComponent<IFeedItemProps> {
       </div>
     )
   }
-}
-
-FeedItem.propTypes = {
-  abcNotation: PropTypes.string,
-  parserParams: PropTypes.object,
-  engraverParams: PropTypes.object,
-  renderParams: PropTypes.object,
-}
-
-FeedItem.defaultProps = {
-  abcNotation: '',
-  parserParams: {},
-  engraverParams: { responsive: 'resize' },
-  renderParams: { viewportHorizontal: true },
 }
 
 export default FeedItem

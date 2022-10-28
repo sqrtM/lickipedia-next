@@ -1,17 +1,33 @@
 .App {
-    text-align: center;
-  }
-  
-  .feed {
-    display: grid;
-    grid-column-start: 2;
-    grid-column-end: five;
-    justify-content: center;
-    justify-items: center;
+  text-align: center;
+}
 
-    border: 2px solid red;
-  }
+#window {
+  display: flex;
+  justify-content: space-evenly;
+  justify-items: center;
 
-  #inputfield {
-    border: 2px solid blue;
-  }
+  border: 2px solid red;
+}
+
+#leftColumn {
+  display: flex;
+
+  justify-content: center;
+  justify-items: center;
+}
+
+#rightColumn {
+  display: flex;
+
+  justify-content: center;
+  justify-items: center;
+}
+
+.feed {
+  border: 2px solid orange
+}
+
+#inputfield {
+  border: 2px solid blue;
+}

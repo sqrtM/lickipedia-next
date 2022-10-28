@@ -1,3 +1,4 @@
+import { wrap } from 'module';
 import React from 'react';
 import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
@@ -31,7 +32,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event: { target: { name : string, value: any; } }): void {
+  handleChange(event: { target: { name: string, value: any; } }): void {
     const target = event.target;
     const name = target.name;
     this.setState({
@@ -50,29 +51,35 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     event.preventDefault();
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
-      <div className={styles.feed}>
-        <div id={styles.inputfield}>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              New Lick :
-              <input type='text' name='title' placeholder='title' onChange={this.handleChange}/>
-              <input type='text' name='key' placeholder='key' onChange={this.handleChange}/>
-              <input type='text' name='music' placeholder='music' onChange={this.handleChange}/>
-              <input type='button' name='more' value='more' />
-            </label>
-            <input type="submit" value='submit' />
-          </form> 
+      <div id={styles.window}>
+        <div id={styles.leftColumn}>
+          Hello
         </div>
-        <div>
-          { this.state.history.reverse().map(i => 
-          <FeedItem
-            abcNotation={i}
-            parserParams={{ staffwidth: 720, wrap: { preferredMeasuresPerLine: 4 } }}
-            engraverParams={{ responsive: 'resize' }}
-            renderParams={{ viewportHorizontal: true }}
-          />) }
+        <div className={styles.feed}>
+          <div id={styles.inputfield}>
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                New Lick :
+                <input type='text' name='title' placeholder='title' onChange={this.handleChange} />
+                <input type='text' name='key' placeholder='key' onChange={this.handleChange} />
+                <input type='text' name='music' placeholder='music' onChange={this.handleChange} />
+                <input type='button' name='more' value='more' />
+              </label>
+              <input type="submit" value='submit' />
+            </form>
+          </div>
+          <div>
+            {this.state.history.reverse().map(i =>
+              <FeedItem
+                abcNotation={i}
+                parserParams={{ staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }}
+              />)}
+          </div>
+        </div>
+        <div id={styles.rightColumn}>
+          World
         </div>
       </div>
     );
