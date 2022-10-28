@@ -1,0 +1,17 @@
+.App {
+    text-align: center;
+  }
+  
+  .feed {
+    display: grid;
+    grid-column-start: 2;
+    grid-column-end: five;
+    justify-content: center;
+    justify-items: center;
+  }
+  
+  #paper {
+    border: 2px solid black;
+    width: 500px;
+    height: 200px
+  }
