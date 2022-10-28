@@ -31,3 +31,18 @@
 #inputfield {
   border: 2px solid blue;
 }
+
+#form {
+  display: flex;
+  justify-items: center;
+  align-content: space-around;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#musicInput {
+  width: 99%;
+  min-height: 17px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
