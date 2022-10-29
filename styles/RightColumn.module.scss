@@ -1,6 +1,31 @@
-.savedLicks {
+.rightColumn {
     text-decoration-style: dotted;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    position: -webkit-sticky;
+    /* Required for Safari */
+    position: sticky;
+    top: 0;
 }
 
-.tooltip { display: none; }
-.lickName:hover + .tooltip { display: block; }
+.tooltip {
+    display: none;
+}
+
+.lickName:hover + .tooltip {
+    display: block;
+}
+
+.savedLicks {
+    text-decoration-style: dotted;
+    position: -webkit-sticky;
+    /* Required for Safari */
+    position: sticky;
+    top: 0;
+    color:red
+}

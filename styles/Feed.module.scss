@@ -6,30 +6,33 @@
   display: flex;
   justify-content: space-evenly;
   justify-items: center;
-
-  border: 2px solid red;
 }
 
-#leftColumn {
+#LeftColumn {
   display: flex;
+  /* Required for Safari */
+  position: -webkit-sticky; 
+  position: sticky;
 
   justify-content: center;
   justify-items: center;
-}
 
-#rightColumn {
-  display: flex;
-
-  justify-content: center;
-  justify-items: center;
+  /* Required for Safari */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }
 
 .feed {
-  border: 2px solid orange
+  border: 2px solid black;
+  padding: 2px;
 }
 
 #inputfield {
-  border: 2px solid blue;
+  position: -webkit-sticky;
+  /* Required for Safari */
+  position: sticky;
+  top: 0;
 }
 
 #form {
@@ -42,7 +45,4 @@
 
 #musicInput {
   width: 99%;
-  min-height: 17px;
-  overflow-x: hidden;
-  overflow-y: auto;
 }

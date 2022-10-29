@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styles from '../styles/RightColumn.module.scss'
-import { feedItemType } from './Feed';
-import abcjsObj from 'abcjs'
-import AbcVisualParams from 'abcjs'
+import { feedItemType, renderAbcNotation } from "./util"
+
 
 
 export interface IRightColumnProps {
@@ -15,17 +14,13 @@ export default class RightColumn extends React.Component<IRightColumnProps> {
     super(props)
   }
 
-  renderAbcNotation(ID: string, abcNotation: string, parserParams: abcjsObj.AbcVisualParams): void {
-    abcjsObj.renderAbc(`abcjs-result-${ID}`, abcNotation, parserParams)
-  }
-
   componentDidUpdate(): void {
-    this.props.historyFeed.forEach(i => this.renderAbcNotation(i[0], i[1], i[2]))
+    this.props.historyFeed.forEach(i => renderAbcNotation(i[0], i[1], i[2]))
   }
 
   public render(): JSX.Element {
     return (
-      <div>
+      <div className={styles.rightColumn}>
         Saved Licks:
         {this.props.savedLicks.map(i =>
           <div key={`RCdiv-${Math.random() * Date.now()}`} className={styles.savedLicks}>

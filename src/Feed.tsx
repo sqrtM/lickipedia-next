@@ -3,10 +3,10 @@ import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { AbcVisualParams } from 'abcjs';
+import { feedItemType } from './util';
 
-export type feedItemType = [uniqueID: string, musicNotation: string, params: AbcVisualParams];
 const defaultParams = { staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }
 
 
@@ -34,7 +34,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
       title: '',
       key: '',
       composer: '',
-      Clef: '',
+      Clef: 'treble',
       music: '',
 
       history: [],
@@ -105,14 +105,14 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
             </form>
           </div>
           <div>
-              <FeedItem
-                historyFeed={this.state.history}
-                parserParams={defaultParams}
-                retrieveSavedLicks={this.retrieveSavedLicks}
-              />
+            <FeedItem
+              historyFeed={this.state.history}
+              parserParams={defaultParams}
+              retrieveSavedLicks={this.retrieveSavedLicks}
+            />
           </div>
         </div>
-        <div id={styles.rightColumn}>
+        <div>
           <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} />
         </div>
       </div>
