@@ -3,6 +3,10 @@ import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
+declare module uuidv4 {}
+import {v4 as uuidv4} from 'uuid';
+let newUUID = uuidv4();
+
 export interface IFeedProps {
 }
 
@@ -15,7 +19,7 @@ export interface IFeedState {
 
   history: string[],
 
-  savedLicks: number[],
+  savedLicks: string[],
 }
 
 export default class Feed extends React.Component<IFeedProps, IFeedState> {
@@ -52,13 +56,14 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.tClef ? 'treble' : 'bass'}\n${this.state.music}`;
     this.setState({
       ...this.state,
-      history: [...this.state.history, newString],
+      history: [newString, ...this.state.history],
     });
     alert('The following lick has been submitted: ' + newString);
     event.preventDefault();
   }
 
-  retrieveSavedLicks = (i: number) => {
+  retrieveSavedLicks = (i: string) => {
+    console.log(i)
     if (!this.state.savedLicks.includes(i)) {
       this.setState({
         ...this.state,
@@ -91,9 +96,10 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
               <input type="submit" value='submit' />
             </form>
           </div>
-          <div>
-            {this.state.history.reverse().map(i =>
+          <div key={`feeddiv-${Math.random() + Date.now()}`}>
+            {this.state.history.map(i =>
               <FeedItem
+                uniqueID={newUUID}
                 abcNotation={i}
                 parserParams={{ staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }}
                 retrieveSavedLicks={this.retrieveSavedLicks}

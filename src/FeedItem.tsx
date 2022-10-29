@@ -3,10 +3,17 @@ import styles from '../styles/FeedItem.module.scss'
 import abcjsObj from 'abcjs'
 import AbcVisualParams from 'abcjs'
 
+
 interface IFeedItemProps {
   abcNotation: string,
   parserParams: AbcVisualParams.AbcVisualParams,
-  retrieveSavedLicks?: (i: number) => void
+  retrieveSavedLicks?: (i: string) => void
+  uniqueID?: string
+}
+
+interface RequiredProps {
+  abcNotation: string,
+  parserParams: AbcVisualParams.AbcVisualParams,
 }
 
 class FeedItem extends PureComponent<IFeedItemProps> {
@@ -18,7 +25,7 @@ class FeedItem extends PureComponent<IFeedItemProps> {
 
   uniqueNumber = Date.now() + Math.random();
 
-  renderAbcNotation({ abcNotation, parserParams }: IFeedItemProps): void {
+  renderAbcNotation({ abcNotation, parserParams }: RequiredProps): void {
     abcjsObj.renderAbc(
       `abcjs-result-${this.uniqueNumber}`,
       abcNotation,
@@ -36,8 +43,9 @@ class FeedItem extends PureComponent<IFeedItemProps> {
     this.renderAbcNotation({ abcNotation, parserParams })
   }
 
-  saveLick = (i: number): void => {
-    this.props.retrieveSavedLicks?.(i)
+  saveLick = (e: any): void => {
+    console.log("id");
+    this.props.retrieveSavedLicks?.("id")
   }
 
   render(): JSX.Element {
@@ -46,7 +54,7 @@ class FeedItem extends PureComponent<IFeedItemProps> {
         <div id={`abcjs-result-${this.uniqueNumber}`} className={styles.feeditem} />
         <span className={styles.feedButtons}>
           <button>like</button>
-          <button onClick={() => this.saveLick(this.uniqueNumber)}>save</button>
+          <button onClick={(e) => this.saveLick(e)}>save</button>
           <button>edit</button>
         </span>
       </div>
