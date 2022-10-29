@@ -3,9 +3,12 @@ import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
-declare module uuidv4 {}
 import {v4 as uuidv4} from 'uuid';
-let newUUID = uuidv4();
+import { AbcVisualParams } from 'abcjs';
+
+export type feedItemType = [uniqueID: string, musicNotation: string, params: AbcVisualParams];
+const defaultParams = { staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }
+
 
 export interface IFeedProps {
 }
@@ -14,13 +17,14 @@ export interface IFeedState {
   title: string;
   key: string;
   composer: string,
-  tClef: boolean,
+  Clef: string,
   music: string,
 
-  history: string[],
+  history: feedItemType[],
 
   savedLicks: string[],
 }
+
 
 export default class Feed extends React.Component<IFeedProps, IFeedState> {
   constructor(props: IFeedProps) {
@@ -30,7 +34,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
       title: '',
       key: '',
       composer: '',
-      tClef: false,
+      Clef: '',
       music: '',
 
       history: [],
@@ -53,10 +57,14 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   }
 
   handleSubmit(event: { preventDefault: () => void; }): void {
-    let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.tClef ? 'treble' : 'bass'}\n${this.state.music}`;
+    let newUUID: string = uuidv4();
+    let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
+    let params: AbcVisualParams = defaultParams;
+
+    let newFeedItem: feedItemType = [newUUID, newString, params];
     this.setState({
       ...this.state,
-      history: [newString, ...this.state.history],
+      history: [newFeedItem, ...this.state.history],
     });
     alert('The following lick has been submitted: ' + newString);
     event.preventDefault();
@@ -87,8 +95,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
                 <span><input type='text' name='key' placeholder='key' onChange={this.handleChange} /></span>
                 <span><input type='text' name='composer' placeholder='composer' onChange={this.handleChange} /></span>
                 <span>
-                  <input type="radio" name='tClef' value='true' onChange={this.handleChange} checked /> treble
-                  <input type="radio" name='tClef' value='false' onChange={this.handleChange} /> bass
+                  <input type="radio" name='Clef' value='treble' onChange={this.handleChange} /> treble
+                  <input type="radio" name='Clef' value='bass' onChange={this.handleChange} /> bass
                 </span>
                 <div><input type='textarea' name='music' placeholder='music' onChange={this.handleChange} id={styles.musicInput} /></div>
               </label>
@@ -96,18 +104,16 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
               <input type="submit" value='submit' />
             </form>
           </div>
-          <div key={`feeddiv-${Math.random() + Date.now()}`}>
-            {this.state.history.map(i =>
+          <div>
               <FeedItem
-                uniqueID={newUUID}
-                abcNotation={i}
-                parserParams={{ staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }}
+                historyFeed={this.state.history}
+                parserParams={defaultParams}
                 retrieveSavedLicks={this.retrieveSavedLicks}
-              />)}
+              />
           </div>
         </div>
         <div id={styles.rightColumn}>
-          <RightColumn savedLicks={this.state.savedLicks} />
+          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} />
         </div>
       </div>
     );

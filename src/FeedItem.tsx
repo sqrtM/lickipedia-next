@@ -3,63 +3,52 @@ import styles from '../styles/FeedItem.module.scss'
 import abcjsObj from 'abcjs'
 import AbcVisualParams from 'abcjs'
 
+import { feedItemType } from './Feed'
+
 
 interface IFeedItemProps {
-  abcNotation: string,
   parserParams: AbcVisualParams.AbcVisualParams,
-  retrieveSavedLicks?: (i: string) => void
-  uniqueID?: string
+  retrieveSavedLicks: (i: string) => void
+  historyFeed: feedItemType[]
 }
 
-interface RequiredProps {
-  abcNotation: string,
-  parserParams: AbcVisualParams.AbcVisualParams,
-}
-
-class FeedItem extends PureComponent<IFeedItemProps> {
+export default class FeedItem extends PureComponent<IFeedItemProps> {
   constructor(props: IFeedItemProps) {
     super(props);
-
     this.saveLick = this.saveLick.bind(this);
   }
 
-  uniqueNumber = Date.now() + Math.random();
-
-  renderAbcNotation({ abcNotation, parserParams }: RequiredProps): void {
-    abcjsObj.renderAbc(
-      `abcjs-result-${this.uniqueNumber}`,
-      abcNotation,
-      parserParams
-    )
+  renderAbcNotation(ID: string, abcNotation: string, parserParams: abcjsObj.AbcVisualParams): void {
+    abcjsObj.renderAbc(`abcjs-result-${ID}`, abcNotation, parserParams)
   }
 
   componentDidMount(): void {
-    const { abcNotation, parserParams } = this.props
-    this.renderAbcNotation({ abcNotation, parserParams })
+    this.props.historyFeed.forEach(i => this.renderAbcNotation(i[0], i[1], i[2]))
   }
 
   componentDidUpdate(): void {
-    const { abcNotation, parserParams } = this.props
-    this.renderAbcNotation({ abcNotation, parserParams })
+    this.props.historyFeed.forEach(i => this.renderAbcNotation(i[0], i[1], i[2]))
   }
-
-  saveLick = (e: any): void => {
-    console.log("id");
-    this.props.retrieveSavedLicks?.("id")
+  
+  saveLick = (s: string): void => {
+    console.log(s);
+    this.props.retrieveSavedLicks(s)
   }
 
   render(): JSX.Element {
     return (
       <div className={styles.feedContainer}>
-        <div id={`abcjs-result-${this.uniqueNumber}`} className={styles.feeditem} />
-        <span className={styles.feedButtons}>
-          <button>like</button>
-          <button onClick={(e) => this.saveLick(e)}>save</button>
-          <button>edit</button>
-        </span>
+        {this.props.historyFeed.map(i =>
+          <div key={Date.now() + Math.random()}>
+            <div id={`abcjs-result-${i[0]}`} className={styles.feeditem} />
+            <span className={styles.feedButtons}>
+              <button>like</button>
+              <button onClick={() => this.saveLick(i[0])}>save</button>
+              <button>edit</button>
+            </span>
+          </div>
+        )}
       </div>
     )
   }
 }
-
-export default FeedItem

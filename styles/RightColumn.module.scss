@@ -1,3 +1,6 @@
 .savedLicks {
     text-decoration-style: dotted;
 }
+
+.tooltip { display: none; }
+.lickName:hover + .tooltip { display: block; }
