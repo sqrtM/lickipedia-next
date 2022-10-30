@@ -52,9 +52,11 @@ input[type=radio] {
 }
 input[type=number] {
   border-radius:7px;
-  width: 30px;
+  width: 20px;
   background-color: #03DAC6;
+  text-align: center;
   color: #141414;
+  caret-color: transparent;
 }
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
