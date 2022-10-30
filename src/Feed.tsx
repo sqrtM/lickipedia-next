@@ -3,31 +3,14 @@ import styles from '../styles/Feed.module.scss';
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
+// why UUID? Because other serialization functions
+// would cause different floating point problems and
+// other weird issues. giving each lick a UUID means
+// it will be easy to tell everything apart.
 import { v4 as uuidv4 } from 'uuid';
-import { AbcVisualParams, Editor, Responsive } from 'abcjs';
-import { feedItemType } from './util';
+import { AbcVisualParams, Editor } from 'abcjs';
+import { feedItemType, defaultFeedParams } from './util';
 import LeftColumn from './LeftColumn';
-
-// using "responsive: "resize"" doesn't work with the saved ones, but it does work with the main feed,
-// so we will have two different sets of default parameters. One for the main feed, and the other for
-// the "saved items" feed. 
-// i believe this is because  { responsive: "resize" } overrides the classname of the .svg, and gets
-// rid of the "onHover" command. this could probably be DOUBLY overridden, but that seems quite 
-// weird for a relatively minor problem. Just make sure there is no "resposive" on the saved items.
-const defaultFeedParams = {
-  responsive: "resize",
-  staffwidth: 720,
-  wrap: {
-    preferredMeasuresPerLine: 4,
-    minSpacing: 0,
-    maxSpacing: 0
-  },
-  jazzchords: true,
-  selectionColor: "#03DAC6",
-  paddingright: 15,
-  visualTranspose: 0,
-}
-
 
 export interface IFeedProps {
 }
@@ -54,7 +37,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
     this.state = {
       title: '',
-      key: '',
+      key: 'C',
       composer: '',
       Clef: 'treble',
       music: '',
@@ -81,6 +64,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     });
   }
 
+  // this formats a UUID, a tuneString and the default parameters into a string
+  // which gets sent into the history to be sent into the FeedItems.
   handleSubmit(event: { preventDefault: () => void; }): void {
     let newUUID: string = uuidv4();
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
@@ -95,6 +80,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     event.preventDefault();
   }
 
+  // this takes the saved licks from the FeedItem component and sends them to be state,
+  // so they can be sent to the RightColumn.
   retrieveSavedLicks = (id: string): void => {
     let newSavedNotation: feedItemType[] = [...this.state.savedNotation];
     if (!this.state.savedLicks.includes(id)) {
@@ -107,8 +94,12 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     }
   }
 
+  // this creates the editor.
+  // however, it KEEPS CREATING
+  // the editor over and over.
+  // not efficent! 
   componentDidUpdate(): void {
-    const abcEditor = new Editor(
+    const e = new Editor(
       "music",
       {
         canvas_id: "paper",
@@ -130,17 +121,18 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
                 <span><input type='text' name='title' placeholder='title' onChange={this.handleChange} /></span>
                 <span><input type='text' name='key' placeholder='key' onChange={this.handleChange} /></span>
                 <span><input type='text' name='composer' placeholder='composer' onChange={this.handleChange} /></span>
+                <div><input type='textarea' name='music' id="music" placeholder='music' onChange={this.handleChange} />
                 <span>
                   <input type="radio" name='Clef' value='treble' onChange={this.handleChange} /> treble
                   <input type="radio" name='Clef' value='bass' onChange={this.handleChange} /> bass
                 </span>
-                <div><input type='textarea' name='music' id="music" placeholder='music' onChange={this.handleChange} /></div>
+                </div>
               </label>
               <input type='button' name='editor' value='editor' onClick={() => this.setState({ editorShown: !this.state.editorShown })} />
               {this.state.editorShown &&
                 <div>
                   <div id="paper"></div>
-                  <div id="warnings" style={{color: "#BB68FC"}}></div>
+                  <div id="warnings" style={{ color: "#BB68FC" }}></div>
                 </div>
               }
               <input type="submit" value='submit' />

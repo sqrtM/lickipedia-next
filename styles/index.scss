@@ -21,3 +21,42 @@ body {
 body::-webkit-scrollbar {
   display: none;
 }
+
+/* 
+there must be a 
+better way... 😭
+*/
+input[type=text] {
+  border-radius:7px;
+}
+input[type=textarea] {
+  border-radius:7px;
+}
+input[type=button] {
+  border-radius:7px;
+  background-color: #BB68FC;
+  color: white;
+}
+input[type=submit] {
+  border-radius:7px;
+  background-color: #BB68FC;
+  color: white;
+}
+button {
+  border-radius:7px;
+  background-color: #03DAC6;
+  color: #141414;
+}
+input[type=radio] {
+  border-radius:7px;
+}
+input[type=number] {
+  border-radius:7px;
+  width: 30px;
+  background-color: #03DAC6;
+  color: #141414;
+}
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+}

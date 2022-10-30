@@ -1,22 +1,7 @@
 import React, { PureComponent } from 'react'
 import styles from '../styles/FeedItem.module.scss'
 import AbcVisualParams, { renderAbc, strTranspose, TuneObject, TuneObjectArray } from 'abcjs'
-
-import { feedItemType, renderAbcNotation } from "./util"
-
-const defaultFeedParams = { 
-  responsive: "resize", 
-  staffwidth: 720, 
-  wrap: { 
-    preferredMeasuresPerLine: 4, 
-    minSpacing: 0, 
-    maxSpacing: 0 
-  }, 
-  jazzchords: true,
-  selectionColor: "#03DAC6",
-  paddingright: 15,
-}
-
+import { feedItemType, renderAbcNotation, defaultFeedParams } from "./util"
 
 interface IFeedItemProps {
   parserParams: AbcVisualParams.AbcVisualParams,
@@ -28,26 +13,13 @@ export default class FeedItem extends PureComponent<IFeedItemProps> {
   constructor(props: IFeedItemProps) {
     super(props);
     this.saveLick = this.saveLick.bind(this);
-    // this.handleTranspose = this.handleTranspose.bind(this);
+    this.handleTranspose = this.handleTranspose.bind(this);
   }
 
   componentDidMount(): void { this.props.historyFeed.forEach(i => renderAbcNotation(i[0], i[1], i[2])) }
-
   componentDidUpdate(): void { this.props.historyFeed.forEach(i => renderAbcNotation(i[0], i[1], i[2])) }
-  
   saveLick = (s: string): void => { this.props.retrieveSavedLicks(s) }
-
-  /*
-  con't figure out how to get a transpose to work, so putting it away for now.
-  maybe later!
-  
-  handleTranspose = (e: any, i: feedItemType): void => {
-    let visualObj: TuneObjectArray = renderAbc(`abcjs-result-${i[0]}`, i[1]);
-    let tranString: any = strTranspose(i[1], visualObj[0], +e.target.value);
-    console.log(tranString, i[1]);
-    renderAbcNotation(i[0], tranString, i[2]);
-  }
-  */
+  handleTranspose = (e: any, i: feedItemType): void => renderAbcNotation(i[0], i[1],  {...i[2], visualTranspose: +e.target.value });
 
   render(): JSX.Element {
     return (
@@ -58,6 +30,8 @@ export default class FeedItem extends PureComponent<IFeedItemProps> {
             <span className={styles.feedButtons}>
               <button onClick={() => this.saveLick(i[0])}>save</button>
               <button>fork</button>
+              transposition<input type='number' min='-24' max='24' onChange={(e) => this.handleTranspose(e, i)} />
+              <span id={styles.date}>{new Date().toLocaleString()}</span>
             </span>
           </div>
         )}

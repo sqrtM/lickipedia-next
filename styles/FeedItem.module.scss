@@ -8,4 +8,11 @@
     display: flex;
     color: #03DAC6;
     flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: small;
+}
+
+#date {
+    font-size: x-small;
 }

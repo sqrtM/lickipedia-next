@@ -1,7 +1,7 @@
 import { renderAbc } from 'abcjs';
 import * as React from 'react';
 import styles from '../styles/RightColumn.module.scss'
-import { feedItemType, renderAbcNotation } from "./util"
+import { feedItemType } from "./util"
 
 export interface IRightColumnProps {
   savedLicks: string[],
