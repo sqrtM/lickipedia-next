@@ -74,7 +74,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   handleSubmit(event: { preventDefault: () => void; }): void {
     let newUUID: string = uuidv4();
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
-    let params: AbcVisualParams = defaultFeedParams;
+    let params: any = defaultFeedParams; // this any is temporary to get around the API 
     // does the lick have a parent ? if so, make it a part of its identity.
     let newFeedItem: feedItemType = this.state.parent ? [newUUID, newString, params, this.state.parent] : [newUUID, newString, params];
     this.setState({
