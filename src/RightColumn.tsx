@@ -39,7 +39,6 @@ export default class RightColumn extends React.Component<IRightColumnProps> {
   public render(): JSX.Element {
     return (
       <div className={styles.rightColumn}>
-        Saved Licks:
         {this.props.savedLicks.map(i =>
           <div key={`RCdiv-${Math.random() * Date.now()}`} className={styles.savedLicks}>
             <span className={styles.lickName} onMouseEnter={this.handleHover} >{i}</span>

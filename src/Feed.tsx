@@ -4,7 +4,7 @@ import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
 import { v4 as uuidv4 } from 'uuid';
-import { AbcVisualParams, Responsive } from 'abcjs';
+import { AbcVisualParams, Editor, Responsive } from 'abcjs';
 import { feedItemType } from './util';
 import LeftColumn from './LeftColumn';
 
@@ -14,18 +14,19 @@ import LeftColumn from './LeftColumn';
 // i believe this is because  { responsive: "resize" } overrides the classname of the .svg, and gets
 // rid of the "onHover" command. this could probably be DOUBLY overridden, but that seems quite 
 // weird for a relatively minor problem. Just make sure there is no "resposive" on the saved items.
-const defaultFeedParams = { 
-  responsive: "resize", 
-  staffwidth: 720, 
-  wrap: { 
-    preferredMeasuresPerLine: 4, 
-    minSpacing: 0, 
-    maxSpacing: 0 
-  }, 
+const defaultFeedParams = {
+  responsive: "resize",
+  staffwidth: 720,
+  wrap: {
+    preferredMeasuresPerLine: 4,
+    minSpacing: 0,
+    maxSpacing: 0
+  },
   jazzchords: true,
   selectionColor: "#03DAC6",
   paddingright: 15,
- }
+  visualTranspose: 0,
+}
 
 
 export interface IFeedProps {
@@ -42,6 +43,8 @@ export interface IFeedState {
 
   savedNotation: feedItemType[];
   savedLicks: string[],
+
+  editorShown: boolean
 }
 
 
@@ -60,6 +63,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
       savedNotation: [],
       savedLicks: [],
+
+      editorShown: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -93,13 +98,23 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   retrieveSavedLicks = (id: string): void => {
     let newSavedNotation: feedItemType[] = [...this.state.savedNotation];
     if (!this.state.savedLicks.includes(id)) {
-      this.state.history.forEach(j => { if (j.includes(id)) { newSavedNotation.unshift(j) } } )
+      this.state.history.forEach(j => { if (j.includes(id)) { newSavedNotation.unshift(j) } })
       this.setState({
         ...this.state,
         savedLicks: [...this.state.savedLicks, id],
         savedNotation: [...newSavedNotation]
       })
     }
+  }
+
+  componentDidUpdate(): void {
+    const abcEditor = new Editor(
+      "music",
+      {
+        canvas_id: "paper",
+        warnings_id: "warnings",
+        abcjsParams: defaultFeedParams,
+      });
   }
 
   public render(): JSX.Element {
@@ -112,7 +127,6 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           <div id={styles.inputfield}>
             <form id={styles.form} onSubmit={this.handleSubmit}>
               <label>
-                New Lick :
                 <span><input type='text' name='title' placeholder='title' onChange={this.handleChange} /></span>
                 <span><input type='text' name='key' placeholder='key' onChange={this.handleChange} /></span>
                 <span><input type='text' name='composer' placeholder='composer' onChange={this.handleChange} /></span>
@@ -120,9 +134,15 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
                   <input type="radio" name='Clef' value='treble' onChange={this.handleChange} /> treble
                   <input type="radio" name='Clef' value='bass' onChange={this.handleChange} /> bass
                 </span>
-                <div><input type='textarea' name='music' placeholder='music' onChange={this.handleChange} id={styles.musicInput} /></div>
+                <div><input type='textarea' name='music' id="music" placeholder='music' onChange={this.handleChange} /></div>
               </label>
-              <input type='button' name='more' value='more' />
+              <input type='button' name='editor' value='editor' onClick={() => this.setState({ editorShown: !this.state.editorShown })} />
+              {this.state.editorShown &&
+                <div>
+                  <div id="paper"></div>
+                  <div id="warnings" style={{color: "#BB68FC"}}></div>
+                </div>
+              }
               <input type="submit" value='submit' />
             </form>
           </div>
@@ -135,7 +155,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           </div>
         </div>
         <div id={styles.WindowRightCol}>
-          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} savedNotation={this.state.savedNotation}/>
+          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} savedNotation={this.state.savedNotation} />
         </div>
       </div>
     );

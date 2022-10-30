@@ -11,8 +11,10 @@ export default class App extends React.Component<IAppProps> {
 
   public render() {
     return (
-      <div>
-        h
+      <div id={styles.LeftColumn}>
+        <div className={styles.title}>
+          Lickipedia
+        </div>
       </div>
     );
   }
