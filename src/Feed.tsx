@@ -4,10 +4,28 @@ import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 
 import { v4 as uuidv4 } from 'uuid';
-import { AbcVisualParams } from 'abcjs';
+import { AbcVisualParams, Responsive } from 'abcjs';
 import { feedItemType } from './util';
+import LeftColumn from './LeftColumn';
 
-const defaultParams = { staffwidth: 720, wrap: { preferredMeasuresPerLine: 4, minSpacing: 0, maxSpacing: 0 } }
+// using "responsive: "resize"" doesn't work with the saved ones, but it does work with the main feed,
+// so we will have two different sets of default parameters. One for the main feed, and the other for
+// the "saved items" feed. 
+// i believe this is because  { responsive: "resize" } overrides the classname of the .svg, and gets
+// rid of the "onHover" command. this could probably be DOUBLY overridden, but that seems quite 
+// weird for a relatively minor problem. Just make sure there is no "resposive" on the saved items.
+const defaultFeedParams = { 
+  responsive: "resize", 
+  staffwidth: 720, 
+  wrap: { 
+    preferredMeasuresPerLine: 4, 
+    minSpacing: 0, 
+    maxSpacing: 0 
+  }, 
+  jazzchords: true,
+  selectionColor: "#03DAC6",
+  paddingright: 15,
+ }
 
 
 export interface IFeedProps {
@@ -22,6 +40,7 @@ export interface IFeedState {
 
   history: feedItemType[],
 
+  savedNotation: feedItemType[];
   savedLicks: string[],
 }
 
@@ -39,6 +58,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
       history: [],
 
+      savedNotation: [],
       savedLicks: [],
     };
 
@@ -59,7 +79,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   handleSubmit(event: { preventDefault: () => void; }): void {
     let newUUID: string = uuidv4();
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
-    let params: AbcVisualParams = defaultParams;
+    let params: AbcVisualParams = defaultFeedParams;
 
     let newFeedItem: feedItemType = [newUUID, newString, params];
     this.setState({
@@ -70,12 +90,14 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     event.preventDefault();
   }
 
-  retrieveSavedLicks = (i: string) => {
-    console.log(i)
-    if (!this.state.savedLicks.includes(i)) {
+  retrieveSavedLicks = (id: string): void => {
+    let newSavedNotation: feedItemType[] = [...this.state.savedNotation];
+    if (!this.state.savedLicks.includes(id)) {
+      this.state.history.forEach(j => { if (j.includes(id)) { newSavedNotation.unshift(j) } } )
       this.setState({
         ...this.state,
-        savedLicks: [...this.state.savedLicks, i]
+        savedLicks: [...this.state.savedLicks, id],
+        savedNotation: [...newSavedNotation]
       })
     }
   }
@@ -83,8 +105,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   public render(): JSX.Element {
     return (
       <div id={styles.window}>
-        <div id={styles.leftColumn}>
-          Hello
+        <div id={styles.WindowLeftCol}>
+          <LeftColumn />
         </div>
         <div className={styles.feed}>
           <div id={styles.inputfield}>
@@ -107,13 +129,13 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           <div>
             <FeedItem
               historyFeed={this.state.history}
-              parserParams={defaultParams}
+              parserParams={defaultFeedParams}
               retrieveSavedLicks={this.retrieveSavedLicks}
             />
           </div>
         </div>
-        <div>
-          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} />
+        <div id={styles.WindowRightCol}>
+          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} savedNotation={this.state.savedNotation}/>
         </div>
       </div>
     );

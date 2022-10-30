@@ -1,13 +1,11 @@
 .feeditem {
-    border: 2px solid black;
-    margin: 4px
-}
-
-.feedContainer {
-    height: fit-content;
+    border: 2px solid #03DAC6;
+    padding: 2px;
+    margin: 2px;
 }
 
 .feedButtons {
     display: flex;
+    color: #03DAC6;
     flex-direction: row;
 }

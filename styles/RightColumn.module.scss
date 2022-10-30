@@ -1,11 +1,10 @@
 .rightColumn {
-    text-decoration-style: dotted;
-
     display: flex;
     flex-direction: column;
-
-    justify-content: center;
-    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+    align-items: stretch;
 
     position: -webkit-sticky;
     /* Required for Safari */
@@ -22,10 +21,14 @@
 }
 
 .savedLicks {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
     text-decoration-style: dotted;
     position: -webkit-sticky;
     /* Required for Safari */
     position: sticky;
     top: 0;
-    color:red
+    color:#BB68FC
 }
