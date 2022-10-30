@@ -1,16 +1,18 @@
 import React from 'react';
 import styles from '../styles/Feed.module.scss';
+
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
+import LeftColumn from './LeftColumn';
+import { feedItemType, defaultFeedParams } from './util';
 
 // why UUID? Because other serialization functions
 // would cause different floating point problems and
 // other weird issues. giving each lick a UUID means
-// it will be easy to tell everything apart.
+// it will be easy to tell everything apart. We
+// can also make unique URLs with this later.
 import { v4 as uuidv4 } from 'uuid';
 import { AbcVisualParams, Editor } from 'abcjs';
-import { feedItemType, defaultFeedParams } from './util';
-import LeftColumn from './LeftColumn';
 
 export interface IFeedProps {
 }
@@ -18,16 +20,17 @@ export interface IFeedProps {
 export interface IFeedState {
   title: string;
   key: string;
-  composer: string,
-  Clef: string,
-  music: string,
+  composer: string;
+  Clef: string;
+  music: string;
+  parent: string;
 
-  history: feedItemType[],
+  history: feedItemType[];
 
   savedNotation: feedItemType[];
-  savedLicks: string[],
+  savedLicks: string[];
 
-  editorShown: boolean
+  editorShown: boolean;
 }
 
 
@@ -41,6 +44,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
       composer: '',
       Clef: 'treble',
       music: '',
+      parent: '',
 
       history: [],
 
@@ -52,7 +56,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.retrieveSavedLicks = this.retrieveSavedLicks.bind(this)
+    this.retrieveSavedLicks = this.retrieveSavedLicks.bind(this);
+    this.recieveFork = this.recieveFork.bind(this);
   }
 
   handleChange(event: { target: { name: string, value: any; } }): void {
@@ -70,10 +75,18 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     let newUUID: string = uuidv4();
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
     let params: AbcVisualParams = defaultFeedParams;
-
-    let newFeedItem: feedItemType = [newUUID, newString, params];
+    // does the lick have a parent ? if so, make it a part of its identity.
+    let newFeedItem: feedItemType = this.state.parent ? [newUUID, newString, params, this.state.parent] : [newUUID, newString, params];
     this.setState({
-      ...this.state,
+      ...this.state,    // clear state on submit.
+      title: '',
+      key: 'C',
+      composer: '',
+      Clef: 'treble',
+      music: '',
+      parent: '',
+      // "unshift" the newFeedItem into the history.
+      // so it appears on top of the feed.
       history: [newFeedItem, ...this.state.history],
     });
     alert('The following lick has been submitted: ' + newString);
@@ -94,10 +107,27 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     }
   }
 
+  // take the info from a forked lick and
+  // put it into state. this will populate
+  // the text fields and create the readonly
+  // parent field to put on the new child lick
+  recieveFork = (fork: feedItemType): void => {
+    let musicArray = fork[1].split(`\n`, 5);
+    this.setState({
+      ...this.state,
+      title: musicArray[0].split(":")[1],
+      composer: musicArray[2].split(":")[1],
+      key: musicArray[3].split(":")[1][0],
+      Clef: musicArray[3].split("=")[1],
+      music: musicArray[4],
+      parent: fork[0],
+    })
+  }
+
   // this creates the editor.
   // however, it KEEPS CREATING
   // the editor over and over.
-  // not efficent! 
+  // not efficent! can I fix this? ??? 
   componentDidUpdate(): void {
     const e = new Editor(
       "music",
@@ -118,14 +148,17 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           <div id={styles.inputfield}>
             <form id={styles.form} onSubmit={this.handleSubmit}>
               <label>
-                <span><input type='text' name='title' placeholder='title' onChange={this.handleChange} /></span>
-                <span><input type='text' name='key' placeholder='key' onChange={this.handleChange} /></span>
-                <span><input type='text' name='composer' placeholder='composer' onChange={this.handleChange} /></span>
-                <div><input type='textarea' name='music' id="music" placeholder='music' onChange={this.handleChange} />
-                <span>
-                  <input type="radio" name='Clef' value='treble' onChange={this.handleChange} /> treble
-                  <input type="radio" name='Clef' value='bass' onChange={this.handleChange} /> bass
-                </span>
+                <span><input type='text' name='title' placeholder='title' value={this.state.title} onChange={this.handleChange} /></span>
+                <span><input type='text' name='key' placeholder='key' value={this.state.key} onChange={this.handleChange} /></span>
+                <span><input type='text' name='composer' placeholder='composer' value={this.state.composer} onChange={this.handleChange} /></span>
+                <div><input type='textarea' name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} />
+                  <span>
+                    <input type="radio" name='Clef' value='treble' onChange={this.handleChange} checked={this.state.Clef === 'treble'} /> treble
+                    <input type="radio" name='Clef' value='bass' onChange={this.handleChange} checked={this.state.Clef === 'bass'} /> bass
+                    {this.state.parent &&
+                      <input type='textarea' className={styles.parent} value={this.state.parent} readOnly />
+                    }
+                  </span>
                 </div>
               </label>
               <input type='button' name='editor' value='editor' onClick={() => this.setState({ editorShown: !this.state.editorShown })} />
@@ -143,11 +176,16 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
               historyFeed={this.state.history}
               parserParams={defaultFeedParams}
               retrieveSavedLicks={this.retrieveSavedLicks}
+              recieveFork={this.recieveFork}
             />
           </div>
         </div>
         <div id={styles.WindowRightCol}>
-          <RightColumn savedLicks={this.state.savedLicks} historyFeed={this.state.history} savedNotation={this.state.savedNotation} />
+          <RightColumn
+            savedLicks={this.state.savedLicks}
+            historyFeed={this.state.history}
+            savedNotation={this.state.savedNotation}
+          />
         </div>
       </div>
     );

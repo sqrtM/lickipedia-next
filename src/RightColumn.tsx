@@ -40,7 +40,7 @@ export default class RightColumn extends React.Component<IRightColumnProps> {
     return (
       <div className={styles.rightColumn}>
         {this.props.savedLicks.map(i =>
-          <div key={`RCdiv-${Math.random() * Date.now()}`} className={styles.savedLicks}>
+          <div key={`RCdiv-${Math.random() + Date.now()}`} className={styles.savedLicks}>
             <span className={styles.lickName} onMouseEnter={this.handleHover} >{i}</span>
             <div className={styles.tooltip} id={`abcjs-saved-${i}`} />
           </div>

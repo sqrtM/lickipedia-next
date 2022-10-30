@@ -1,18 +1,18 @@
-.feeditem {
-    border: 2px solid #03DAC6;
-    padding: 2px;
-    margin: 2px;
-}
 
 .feedButtons {
     display: flex;
     color: #03DAC6;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
     font-size: small;
 }
 
 #date {
     font-size: x-small;
+}
+
+.feeditem {
+    border: 2px solid #03DAC6;
+    margin-top: 2px;
 }
