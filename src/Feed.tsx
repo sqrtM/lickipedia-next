@@ -68,7 +68,6 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
 
 
   componentDidMount(): void {
-    this.textarea.focus();
     autosize(this.textarea);
   }
 
