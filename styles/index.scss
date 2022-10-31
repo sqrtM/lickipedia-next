@@ -27,10 +27,23 @@ there must be a
 better way... 😭
 */
 input[type=text] {
+  font-family: 'Roboto', sans-serif;
   border-radius:7px;
+  padding: 2px 2px;
+  box-sizing: border-box;
 }
 input[type=textarea] {
+  font-family: 'Roboto', sans-serif;
   border-radius:7px;
+  padding: 2px 2px;
+  box-sizing: border-box;
+}
+textarea {
+  font-family: 'Roboto', sans-serif;
+  border-radius:7px;
+  resize: none;
+  box-sizing: border-box;
+  padding: 2px 2px;
 }
 input[type=button] {
   font-family: "Karrik-regular";
@@ -51,6 +64,7 @@ button {
   color: #141414;
 }
 input[type=radio] {
+  font-family: 'Roboto', sans-serif;
   border-radius:7px;
 }
 input[type=number] {

@@ -18,9 +18,35 @@
   justify-content: center;
 }
 
-#musicRow {
+.inputRowRow {
+  display: flex;
+  flex-direction: row;
+  width: 99%;
+  padding: 1px;
+
+}
+
+.inputRowRow > input {
+  width: -webkit-fill-available;
+}
+
+.inputRowCol {
   display: flex;
   flex-direction: column;
+  padding: 1px;
+
+}
+
+#inputTopRow {
+  display: flex;
+  flex-direction: row;
+  width: -webkit-fill-available;
+  padding: 1px;
+
+}
+
+#inputTopRow > input {
+  width: 100%;
 }
 
 .feed {
@@ -47,17 +73,26 @@
   background-color: #141414;
   top: 2px;
   z-index: 9;
+  padding: 2px;
+
 }
 
 #form {
   display: flex;
+  padding: 2px;
   justify-items: center;
   align-content: space-around;
   flex-direction: column;
   justify-content: center;
-  margin-right: 14px;
+  width: -webkit-fill-available;
 }
 
+#radio {
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  font-size: small;
+}
 /* 
 this doesn't work yet, but
 I want to disallow selection

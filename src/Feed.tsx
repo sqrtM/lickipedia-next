@@ -1,10 +1,13 @@
 import React from 'react';
+import autosize from 'autosize';
+
 import styles from '../styles/Feed.module.scss';
 
 import FeedItem from './FeedItem';
 import RightColumn from './RightColumn';
 import LeftColumn from './LeftColumn';
 import { feedItemType, defaultFeedParams } from './util';
+
 
 // why UUID? Because other serialization functions
 // would cause different floating point problems and
@@ -35,6 +38,7 @@ export interface IFeedState {
 
 
 export default class Feed extends React.Component<IFeedProps, IFeedState> {
+  textarea: any;
   constructor(props: IFeedProps) {
     super(props);
 
@@ -58,6 +62,26 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.retrieveSavedLicks = this.retrieveSavedLicks.bind(this);
     this.recieveFork = this.recieveFork.bind(this);
+  }
+
+  componentDidMount() {
+    this.textarea.focus();
+    autosize(this.textarea);
+  }
+
+  // this creates the editor.
+  // however, it KEEPS CREATING
+  // the editor over and over.
+  // not efficent! can I fix this? ??? 
+  componentDidUpdate(): void {
+    const e = new Editor(
+      "music",
+      {
+        canvas_id: "paper",
+        warnings_id: "warnings",
+        abcjsParams: defaultFeedParams,
+      });
+    autosize.update(this.textarea)
   }
 
   handleChange(event: { target: { name: string, value: any; } }): void {
@@ -126,20 +150,6 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     })
   }
 
-  // this creates the editor.
-  // however, it KEEPS CREATING
-  // the editor over and over.
-  // not efficent! can I fix this? ??? 
-  componentDidUpdate(): void {
-    const e = new Editor(
-      "music",
-      {
-        canvas_id: "paper",
-        warnings_id: "warnings",
-        abcjsParams: defaultFeedParams,
-      });
-  }
-
   public render(): JSX.Element {
     return (
       <div id={styles.window}>
@@ -150,14 +160,19 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
           <div id={styles.inputfield}>
             <form id={styles.form} onSubmit={this.handleSubmit}>
               <label>
-                <span><input type='text' name='title' placeholder='title' value={this.state.title} onChange={this.handleChange} /></span>
-                <span><input type='text' name='key' placeholder='key' value={this.state.key} onChange={this.handleChange} /></span>
-                <span>
-                  <input type='text' name='composer' placeholder='composer' value={this.state.composer} onChange={this.handleChange} />
-                  <input type="radio" name='Clef' value='treble' onChange={this.handleChange} checked={this.state.Clef === 'treble'} /> treble
-                  <input type="radio" name='Clef' value='bass' onChange={this.handleChange} checked={this.state.Clef === 'bass'} /> bass
+                <span id={styles.inputTopRow}>
+                  <input type='text' name='title' placeholder='title' value={this.state.title} onChange={this.handleChange} />
+                  <input type='text' name='key' placeholder='key' value={this.state.key} onChange={this.handleChange} />
                 </span>
-                <div id={styles.musicRow}><input type='textarea' name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} />
+                <span className={styles.inputRowRow}>
+                  <input type='text' name='composer' placeholder='composer' value={this.state.composer} onChange={this.handleChange} />
+                  <span id={styles.radio}>
+                    <input type="radio" name='Clef' value='treble' onChange={this.handleChange} checked={this.state.Clef === 'treble'} /> treble
+                    <input type="radio" name='Clef' value='bass' onChange={this.handleChange} checked={this.state.Clef === 'bass'} /> bass
+                  </span>
+                </span>
+                <div className={styles.inputRowCol}>
+                  <textarea name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} ref={c => (this.textarea = c)} rows={1} />
                   <span className={styles.parent}>
                     {this.state.parent &&
                       <input type='textarea' value={this.state.parent} readOnly />

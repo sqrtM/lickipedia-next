@@ -1,3 +1,5 @@
+// utility functions and types which are used across the app
+
 import * as abc from 'abcjs';
 
 export type feedItemType = [
