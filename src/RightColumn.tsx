@@ -16,7 +16,7 @@ export interface IRightColumnProps {
 // rid of the "onHover" command. this could probably be DOUBLY overridden, but that seems quite 
 // weird for a relatively minor problem. Just make sure there is no "resposive" on the saved items.
 const defaultSavedParams = {
-  staffwidth: 525, 
+  staffwidth: 525,
   wrap: {
     preferredMeasuresPerLine: 4,
     minSpacing: 0,

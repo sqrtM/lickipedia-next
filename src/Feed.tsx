@@ -38,6 +38,8 @@ export interface IFeedState {
 
 
 export default class Feed extends React.Component<IFeedProps, IFeedState> {
+  // this is declared as "any", because if I declare it as an HTML element,
+  // (which it is), it gets angry. any works, though, which is weird.
   textarea: any;
   constructor(props: IFeedProps) {
     super(props);
@@ -64,7 +66,8 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     this.recieveFork = this.recieveFork.bind(this);
   }
 
-  componentDidMount() {
+
+  componentDidMount(): void {
     this.textarea.focus();
     autosize(this.textarea);
   }
