@@ -4,7 +4,8 @@ export type feedItemType = [
     uniqueID: string,
     musicNotation: string,
     params: abc.AbcVisualParams,
-    parent?: string
+    parent: string,
+    date: string
 ];
 
 export const renderAbcNotation = (ID: string, abcNotation: string, parserParams: abc.AbcVisualParams): void => {

@@ -18,6 +18,11 @@
   justify-content: center;
 }
 
+#musicRow {
+  display: flex;
+  flex-direction: column;
+}
+
 .feed {
   display: flex;
   flex-grow: 1;
@@ -64,4 +69,6 @@ though it is read only).
   -webkit-user-select: none;
   -khtml-user-select: none;
   user-select: none;
+  display: flex;
+  flex-direction: column;
 }

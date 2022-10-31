@@ -18,16 +18,15 @@ export default class FeedItem extends PureComponent<IFeedItemProps> {
     this.handleFork = this.handleFork.bind(this);
   }
 
-  getDate = () => new Date().toLocaleString()
   componentDidMount(): void { this.props.historyFeed.forEach(i => renderAbcNotation(i[0], i[1], i[2])) }
   componentDidUpdate(): void { this.props.historyFeed.forEach(i => renderAbcNotation(i[0], i[1], i[2])) }
   saveLick = (s: string): void => { this.props.retrieveSavedLicks(s) }
-  handleTranspose = (e: any, i: feedItemType): void => renderAbcNotation(i[0], i[1],  {...i[2], visualTranspose: +e.target.value });
+  handleTranspose = (e: any, i: feedItemType): void => renderAbcNotation(i[0], i[1], { ...i[2], visualTranspose: +e.target.value });
   handleFork(i: feedItemType): void { this.props.recieveFork(i) }
 
   render(): JSX.Element {
     return (
-      <div className={styles.feedContainer} style={{width: "-webkit-fill-available"}}>
+      <div className={styles.feedContainer} style={{ width: "-webkit-fill-available" }}>
         {this.props.historyFeed.map(i =>
           <div key={Date.now() + Math.random()}>
             <div id={`abcjs-result-${i[0]}`} className={styles.feeditem} />
@@ -35,11 +34,9 @@ export default class FeedItem extends PureComponent<IFeedItemProps> {
               <button onClick={() => this.saveLick(i[0])}>save</button>
               <button onClick={() => this.handleFork(i)}>fork</button>
               <span>transposition<input type='number' min='-24' max='24' placeholder='0' onChange={(e) => this.handleTranspose(e, i)} /></span>
-              {i.length > 3 && <span>{i[3]}</span>}
-              <span id={styles.date}>{this.getDate()}</span>
+              {i[3]} <span id={styles.date}>{i[4]}</span>
             </span>
-          </div>
-        )}
+          </div>)}
       </div>
     )
   }

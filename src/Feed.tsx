@@ -76,7 +76,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
     let params: AbcVisualParams = defaultFeedParams;
     // does the lick have a parent ? if so, make it a part of its identity.
-    let newFeedItem: feedItemType = this.state.parent ? [newUUID, newString, params, this.state.parent] : [newUUID, newString, params];
+    let newFeedItem: feedItemType = [newUUID, newString, params, this.state.parent, new Date().toLocaleString()];
     this.setState({
       ...this.state,    // clear state on submit.
       title: '',
@@ -112,12 +112,14 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
   // the text fields and create the readonly
   // parent field to put on the new child lick
   recieveFork = (fork: feedItemType): void => {
+    // lots of string manip to get the 'tune object'
+    // to split properly into the different text fields
     let musicArray = fork[1].split(`\n`, 5);
     this.setState({
       ...this.state,
       title: musicArray[0].split(":")[1],
       composer: musicArray[2].split(":")[1],
-      key: musicArray[3].split(":")[1][0],
+      key: musicArray[3].split(":")[1].split(" ")[0],
       Clef: musicArray[3].split("=")[1],
       music: musicArray[4],
       parent: fork[0],
@@ -150,13 +152,15 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
               <label>
                 <span><input type='text' name='title' placeholder='title' value={this.state.title} onChange={this.handleChange} /></span>
                 <span><input type='text' name='key' placeholder='key' value={this.state.key} onChange={this.handleChange} /></span>
-                <span><input type='text' name='composer' placeholder='composer' value={this.state.composer} onChange={this.handleChange} /></span>
-                <div><input type='textarea' name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} />
-                  <span>
-                    <input type="radio" name='Clef' value='treble' onChange={this.handleChange} checked={this.state.Clef === 'treble'} /> treble
-                    <input type="radio" name='Clef' value='bass' onChange={this.handleChange} checked={this.state.Clef === 'bass'} /> bass
+                <span>
+                  <input type='text' name='composer' placeholder='composer' value={this.state.composer} onChange={this.handleChange} />
+                  <input type="radio" name='Clef' value='treble' onChange={this.handleChange} checked={this.state.Clef === 'treble'} /> treble
+                  <input type="radio" name='Clef' value='bass' onChange={this.handleChange} checked={this.state.Clef === 'bass'} /> bass
+                </span>
+                <div id={styles.musicRow}><input type='textarea' name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} />
+                  <span className={styles.parent}>
                     {this.state.parent &&
-                      <input type='textarea' className={styles.parent} value={this.state.parent} readOnly />
+                      <input type='textarea' value={this.state.parent} readOnly />
                     }
                   </span>
                 </div>
