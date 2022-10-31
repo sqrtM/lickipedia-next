@@ -95,14 +95,13 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
     });
   }
 
-  // this formats a UUID, a tuneString and the default parameters into a string
-  // which gets sent into the history to be sent into the FeedItems.
+  // this formats a UUID, a tuneString, the default parameters;
+  // and a locale string which gets sent into the history 
+  // to be sent into the FeedItems.
   handleSubmit(event: { preventDefault: () => void; }): void {
-    let newUUID: string = uuidv4();
     let newString: string = `T:${this.state.title}\nM:4/4\nC:${this.state.composer}\nK:${this.state.key} clef=${this.state.Clef}\n${this.state.music}`;
     let params: AbcVisualParams = defaultFeedParams;
-    // does the lick have a parent ? if so, make it a part of its identity.
-    let newFeedItem: feedItemType = [newUUID, newString, params, this.state.parent, new Date().toLocaleString()];
+    let newFeedItem: feedItemType = [uuidv4(), newString, params, this.state.parent, new Date().toLocaleString()];
     this.setState({
       ...this.state,    // clear state on submit.
       title: '',
@@ -129,7 +128,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
         ...this.state,
         savedLicks: [...this.state.savedLicks, id],
         savedNotation: [...newSavedNotation]
-      })
+      });
     }
   }
 
@@ -149,7 +148,7 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
       Clef: musicArray[3].split("=")[1],
       music: musicArray[4],
       parent: fork[0],
-    })
+    });
   }
 
   public render(): JSX.Element {
@@ -174,7 +173,15 @@ export default class Feed extends React.Component<IFeedProps, IFeedState> {
                   </span>
                 </span>
                 <div className={styles.inputRowCol}>
-                  <textarea name='music' id="music" placeholder='music' value={this.state.music} onChange={this.handleChange} ref={c => (this.textarea = c)} rows={1} />
+                  <textarea 
+                    name='music' 
+                    id="music" 
+                    placeholder='music' 
+                    value={this.state.music} 
+                    onChange={this.handleChange} 
+                    ref={c => (this.textarea = c)} 
+                    rows={1} 
+                  />
                   <span className={styles.parent}>
                     {this.state.parent &&
                       <input type='textarea' value={this.state.parent} readOnly />
