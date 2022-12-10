@@ -1,6 +1,8 @@
 ## lickipedia 
 ### a twitter-style approach to sharing and saving your favorite licks.
 
+this project is moving here to keep up with the new version of nextjs : https://github.com/sqrtM/lickipedia-ideo
+
 made possible through the wonders of the [abc music notation](https://abcnotation.com/), paul rosen's [abcjs](https://github.com/paulrosen/abcjs), and a couple peeks at rigo bauer's [react snippets](https://github.com/rigobauer/react-abcjs) (this stuff was surprisingly tricky to get to render in react and keep unique refs and ids etc etc).
 
 ![image](https://user-images.githubusercontent.com/79169638/199057720-836f78f7-b2f9-416e-adcd-e06d7c387581.png)
